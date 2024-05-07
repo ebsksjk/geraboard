@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "requests.h"
+#include "cJSON.h"
 
 #define MAX_RESPONSE_SIZE 1024
 
@@ -21,7 +22,10 @@ int main(int argc, char** argv) {
 
         makeRequest(&req);
 
-        printf("%s\n", req.response);
+        cJSON *json = cJSON_Parse(req.response);
+
+        printf("%s\n", cJSON_Print(json));
+        printf("request (unparsed):\n%s\n", req.response);
 
         free(req.response);
     }
