@@ -7,16 +7,68 @@
 
 #include <locale.h>
 
+char* restrcat(char *s1, const char *s2){
+    const size_t a = strlen(s1);
+    const size_t b = strlen(s2);
+    const size_t size_ab = a + b + 1;
 
-const char* escapeString(const char* str){
+    s1 = realloc(s1, size_ab);
+
+    memcpy(s1 + a, s2, b + 1);
+
+    return s1;
+}
+
+
+const char* escapeWChar(wchar_t symbol){
+    static char result[2];
+
+    switch (symbol) {
+        case L' ':
+            return "%20";
+        case L'ü':
+            return "%C3%BC";
+        case L'ö':
+            return "%C3%B6";
+        case L'ä':
+            return "%C3%A4";
+        case L'Ä':
+            return "%C3%84";
+        case L'Ü':
+            return "%C3%9C";
+        case L'Ö':
+            return "%C3%96";
+        case L'ß':
+            return "%C3%9F";
+        default:
+            result[0] = (char)symbol;
+            result[1] = '\0';
+            return result;
+    }
+} 
+
+char* escapeWideCharString(wchar_t* wstr){
+    char* escStr = calloc(1, sizeof(char));
+    for (wchar_t* s = wstr; s != NULL && *s != L'\0'; s++) {
+        printf("escaped: %s (%c - %x)\n", escapeWChar(*s), *s, *s);
+        escStr = restrcat(escStr, escapeWChar(*s));
+    }
+
+    printf("escaped String: %s (%ld chars)\n", escStr, strlen(escStr));
+
+    return escStr;
+}
+
+char* escapeString(const char* str){
+
+    char* ret;
+    wchar_t *wstr;
+    int length = strlen(str);
 
     setlocale(LC_ALL, "");
-
-    int length = strlen(str);
-    printf("string %s with length %d\n", str, length);
     
     // Speicher für den wchar_t*-String zuweisen (jedes Zeichen benötigt mehr Speicherplatz als in der char*-Version)
-    wchar_t *wstr = calloc(length + 1, sizeof(wchar_t));
+    wstr = calloc(length + 1, sizeof(wchar_t));
     if (wstr == NULL) {
         perror("Could not allocate memory");
         exit(EXIT_FAILURE);
@@ -27,54 +79,13 @@ const char* escapeString(const char* str){
         perror("mbstowcs failure :( - ");
         exit(EXIT_FAILURE);
     }
-
-    int wlen = wcslen(wstr);
-    printf("len: %d\n", wlen);
-
-    if(wstr == NULL){
-        printf("NULLLLL :((((\n");
-    }
-
-    wprintf(L"aaaaaaaaaa\n");
     
-    // Den resultierenden wchar_t*-String ausgeben
-    wprintf(L"Der Wide-String: %ls\n", wstr);
-    for (wchar_t* s = wstr; s != NULL && *s != L'\0'; s++) {
-        wprintf(L"%lc\n", *s);
-    }
     
     // Speicher freigeben
+    ret = escapeWideCharString(wstr);
     free(wstr);
 
-    return "";
-
-    //return escapeWideCharString(str);
+    return ret;
 }
-
-const char* escapeWideCharString(const wchar_t* str){
-
-}
-
-
-const char* escapeSymbol(const wchar_t symbol){
-    switch (symbol) {
-        case ' ':
-            return "%20";
-        case 'ü':
-            return "%C3%BC";
-        case 'ö':
-            return "%C3%B6";
-        case 'ä':
-            return "%C3%A4";
-        case 'Ä':
-            return "%C3%84";
-        case 'Ü':
-            return "%C3%9C";
-        case 'Ö':
-            return "%C3%96";
-        case 'ß':
-            return "%C3%9F";
-    }
-} 
 
 #endif

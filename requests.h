@@ -8,19 +8,6 @@
 
 #define GET_VARIABLE_NAME(Variable) (#Variable)
 
-char * my_strcatt(char *s1, const char *s2)
-{
-    const size_t a = strlen(s1);
-    const size_t b = strlen(s2);
-    const size_t size_ab = a + b + 1;
-
-    s1 = (char*)realloc(s1, size_ab);
-
-    memcpy(s1 + a, s2, b + 1);
-
-    return s1;
-}
-
 typedef struct Request{
     char* URL;
     char** argv;

@@ -72,6 +72,8 @@ Station* getStation(const char* name) {
     makeRequest(&req);
 
     printf("\n\n%s\n", req.response);
+
+    free(req.response);
 }
 
 #endif

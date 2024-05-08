@@ -30,8 +30,11 @@ int main(int argc, char** argv) {
 
     char* unescapedStr = "Gera Süd";
 
-    escapeString(unescapedStr);
+    char* escStr = escapeString(unescapedStr);
     printf("\n");
+
+    //free(stat);
+    free(escStr);
 
     return 0;
 }
