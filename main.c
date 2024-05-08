@@ -33,6 +33,8 @@ int main(int argc, char** argv) {
     char* escStr = escapeString(unescapedStr);
     printf("\n");
 
+    Station* stat2 = getStation(escStr);
+
     //free(stat);
     free(escStr);
 

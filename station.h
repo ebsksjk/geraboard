@@ -67,6 +67,7 @@ typedef struct Station {
 Station* getStation(const char* name) {
     Request req;
     asprintf(&req.URL, "https://v6.db.transport.rest/locations?query=%s&results=1", name);
+    req.response = calloc(1, sizeof(char));
     printf("%s\n", req.URL);
 
     makeRequest(&req);
@@ -74,6 +75,7 @@ Station* getStation(const char* name) {
     printf("\n\n%s\n", req.response);
 
     free(req.response);
+    free(req.URL);
 }
 
 #endif
