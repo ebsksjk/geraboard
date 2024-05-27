@@ -26,9 +26,6 @@ int main(int argc, char** argv) {
         free(req.response);
     }*/
 
-    Station* stat = getStation("Gera%20Hbf");
-    printf("hbf: %s (%s)\n", stat->name, stat->id);
-
     const char* unescapedStr = "Gera Süd";
 
     char* escStr = escapeString(unescapedStr);
@@ -38,6 +35,19 @@ int main(int argc, char** argv) {
     printf("sued: %s (%s)\n", stat2->name, stat2->id);
     //free(stat);
     free(escStr);
+
+    int dCount;
+    Departure** det = getDepartures(stat2, &dCount);
+
+    for(int i = 0; i < dCount; i++) {
+        printf("line: %s (%s)\n", det[i]->line->name, det[i]->line->fahrtNr);
+    }
+
+    freeStation(stat2);
+    for(int i = 0; i < dCount; i++) {
+        freeDeparture(det[i]);
+    }
+
 
     return 0;
 }
