@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include "station.h"
-#include "requests.h"
+#include "departures.h"
 #include "utils.h"
-#include "cJSON.h"
+
 
 #define MAX_RESPONSE_SIZE 1024
 
@@ -27,14 +27,15 @@ int main(int argc, char** argv) {
     }*/
 
     Station* stat = getStation("Gera%20Hbf");
+    printf("hbf: %s (%s)\n", stat->name, stat->id);
 
-    char* unescapedStr = "Gera Süd";
+    const char* unescapedStr = "Gera Süd";
 
     char* escStr = escapeString(unescapedStr);
-    printf("\n");
+    //printf("\n");
 
     Station* stat2 = getStation(escStr);
-
+    printf("sued: %s (%s)\n", stat2->name, stat2->id);
     //free(stat);
     free(escStr);
 

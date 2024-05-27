@@ -50,7 +50,7 @@ const char* escapeWChar(wchar_t symbol){
 char* escapeWideCharString(wchar_t* wstr){
     char* escStr = calloc(1, sizeof(char));
     for (wchar_t* s = wstr; s != NULL && *s != L'\0'; s++) {
-        printf("escaped: %s (%c - %x)\n", escapeWChar(*s), *s, *s);
+        //printf("escaped: %s (%c - %x)\n", escapeWChar(*s), *s, *s);
         escStr = restrcat(escStr, escapeWChar(*s));
     }
 

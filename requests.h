@@ -30,7 +30,7 @@ size_t write_callback(void *ptr, size_t size, size_t nmemb, char **response) {
 }
 
 
-Request* makeRequest(Request* req){
+void makeRequest(Request* req){
     CURL *curl;
     CURLcode res;
     char* url = req->URL; // Die URL, von der Sie die Antwort abrufen möchten

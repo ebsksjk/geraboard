@@ -1,38 +1,12 @@
-#ifndef STATION
-
-#define STATION
-
+//
+// Created by mara on 27.05.24.
+//
+#include <stdio.h>
+#include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-#include <stdio.h>
-#include <locale.h>
-#include "requests.h"
 #include "cJSON.h"
-
-/* example JSON:
-[{
-		"type":	"stop",
-		"id":	"8010126",
-		"name":	"Gera Süd",
-		"location":	{
-			"type":	"location",
-			"id":	"8010126",
-			"latitude":	50.870423,
-			"longitude":	12.077403
-		},
-		"products":	{
-			"nationalExpress":	false,
-			"national":	false,
-			"regionalExpress":	false,
-			"regional":	true,
-			"suburban":	false,
-			"bus":	true,
-			"ferry":	false,
-			"subway":	false,
-			"tram":	true,
-			"taxi":	false
-		}
-	}]*/
+#include <locale.h>
 
 typedef struct Location {
     char* type;
@@ -56,13 +30,11 @@ typedef struct Products {
 
 typedef struct Station {
     char* type;
-	char* id;
+    char* id;
     char* name;
     Location* location;
     Products* products;
 } Station;
-
-////////////////////////////////////////////////////////////////////////////////////////////
 
 Station* loadStation(const char* json_data) {
     setlocale(LC_ALL, "C");
@@ -80,7 +52,9 @@ Station* loadStation(const char* json_data) {
         cJSON_Delete(root);
         return NULL;
     }
-    Station *station = malloc(sizeof(Station));
+
+    // Speicher für die Station-Struct allozieren
+    Station* station = (Station*)malloc(sizeof(Station));
     if (station == NULL) {
         printf("Error: Could not allocate memory for station\n");
         cJSON_Delete(root);
@@ -172,8 +146,6 @@ Station* loadStation(const char* json_data) {
     return station;
 }
 
-//////////////////////////////////////////////////////////////////////////////////
-
 void freeStation(Station* station) {
     if (station) {
         free(station->type);
@@ -187,26 +159,24 @@ void freeStation(Station* station) {
     }
 }
 
-//////////////////////////////////////////////////////////////////////////////////
-Station* getStation(const char* name) {
-    Request req;
-    asprintf(&req.URL, "https://v6.db.transport.rest/locations?query=%s&results=1", name);
-    req.response = calloc(1, sizeof(char));
-    //printf("%s\n", req.URL);
+int main() {
+    const char* json_data = "[{\"type\":\"stop\",\"id\":\"8010126\",\"name\":\"Gera Süd\",\"location\":{\"type\":\"location\",\"id\":\"8010126\",\"latitude\":50.870423,\"longitude\":12.077403},\"products\":{\"nationalExpress\":false,\"national\":false,\"regionalExpress\":false,\"regional\":true,\"suburban\":false,\"bus\":true,\"ferry\":false,\"subway\":false,\"tram\":true,\"taxi\":false}}]";
+    setlocale(LC_ALL, "");
+    Station* station = loadStation(json_data);
+    if (station) {
+        printf("Type: %s\n", station->type);
+        printf("ID: %s\n", station->id);
+        printf("Name: %s\n", station->name);
+        printf("Location Type: %s\n", station->location->type);
+        printf("Location ID: %s\n", station->location->id);
+        printf("Latitude: %lf\n", station->location->latitude);
+        printf("Longitude: %lf\n", station->location->longitude);
+        printf("Regional: %s\n", station->products->regional ? "true" : "false");
+        printf("Bus: %s\n", station->products->bus ? "true" : "false");
+        printf("Tram: %s\n", station->products->tram ? "true" : "false");
 
-    makeRequest(&req);
-    //printf("yayyyyyy");
-    //printf("\n\n%s\n", req.response);
+        freeStation(station);
+    }
 
-    Station* stat = loadStation(req.response);
-    //printf("%s (%s)", stat->name, stat->id);
-
-    free(req.response);
-    free(req.URL);
-
-    return stat;
+    return 0;
 }
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-#endif
