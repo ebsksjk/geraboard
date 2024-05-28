@@ -39,7 +39,7 @@ void makeRequest(Request* req){
     curl = curl_easy_init();
     if (curl) {
 
-        curl_easy_setopt(curl, CURLOPT_BUFFERSIZE, 256000);
+        curl_easy_setopt(curl, CURLOPT_BUFFERSIZE, 524288);
 
         // Setzen der URL für die Anfrage
         curl_easy_setopt(curl, CURLOPT_URL, url);

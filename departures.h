@@ -147,7 +147,7 @@ Departure** loadDepartures(const char* json_data, int* count) {
 
 Departure** getDepartures(Station* station, int* count) {
     Request req;
-    asprintf(&req.URL, "https://v6.db.transport.rest/stops/%s/departures?duration=60&remarks=true&language=en&bus=false&tram=false", station->id);
+    asprintf(&req.URL, "https://v6.db.transport.rest/stops/%s/departures?duration=60&remarks=true&language=en&bus=false&tram=false&results=3", station->id);
 
     makeRequest(&req);
     printf("yayyyyyy");
