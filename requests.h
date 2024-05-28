@@ -1,5 +1,5 @@
 #ifndef REQUESTS_H
-    #define REQUESTS_H
+#define REQUESTS_H
 
 #include <stdio.h>
 #include <string.h>
@@ -8,39 +8,37 @@
 
 #define GET_VARIABLE_NAME(Variable) (#Variable)
 
-typedef struct Request{
+typedef struct Request {
     char* URL;
     char** argv;
     int argc;
-
     char* response;
-
 } Request;
 
 size_t write_callback(void *ptr, size_t size, size_t nmemb, char **response) {
     size_t new_size = size * nmemb;
-    *response = realloc(*response, new_size + 1); // +1 für das Nullzeichen
+    size_t old_size = *response ? strlen(*response) : 0;
+
+    *response = realloc(*response, old_size + new_size + 1); // +1 für das Nullzeichen
     if (*response == NULL) {
         fprintf(stderr, "Fehler beim Zuweisen von Speicher\n");
         return 0;
     }
-    memcpy(*response, ptr, new_size);
-    (*response)[new_size] = '\0'; // Nullzeichen am Ende setzen
+
+    memcpy(*response + old_size, ptr, new_size);
+    (*response)[old_size + new_size] = '\0'; // Nullzeichen am Ende setzen
+
     printf("response: %s\n", *response);
     return new_size;
 }
 
-
-void makeRequest(Request* req){
+void makeRequest(Request* req) {
     CURL *curl;
     CURLcode res;
     char* url = req->URL; // Die URL, von der Sie die Antwort abrufen möchten
 
     curl = curl_easy_init();
     if (curl) {
-
-        curl_easy_setopt(curl, CURLOPT_BUFFERSIZE, 524288);
-
         // Setzen der URL für die Anfrage
         curl_easy_setopt(curl, CURLOPT_URL, url);
 
@@ -53,7 +51,6 @@ void makeRequest(Request* req){
 
         // Übergeben des Zielbereichs für die Antwort
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &req->response);
-
 
         // Ausführen der Anfrage
         res = curl_easy_perform(curl);

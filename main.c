@@ -40,7 +40,7 @@ int main(int argc, char** argv) {
     Departure** det = getDepartures(stat2, &dCount);
 
     for(int i = 0; i < dCount; i++) {
-        printf("line: %s (%s) -> %s - %s (%s)\n", det[i]->line->name, det[i]->line->fahrtNr, det[i]->direction, det[i]->plannedWhen, det[i]->when);
+        printf("line: %s (%s) -> %s - %s (%s); Gleis %s (%s)\n", det[i]->line->name, det[i]->line->fahrtNr, det[i]->direction, det[i]->plannedWhen, det[i]->when, det[i]->plannedplatform, det[i]->platform);
     }
 
     freeStation(stat2);
