@@ -56,7 +56,7 @@ typedef struct Departure{
 
 Departure** loadDepartures(const char* json_data, int* count) {
     cJSON* root = cJSON_Parse(json_data);
-    printf("json: %s\n",json_data);
+    //printf("json: %s\n",json_data);
     if (root == NULL) {
         printf("Error before: [%s]\n", cJSON_GetErrorPtr());
         return NULL;
@@ -102,10 +102,26 @@ Departure** loadDepartures(const char* json_data, int* count) {
         }
 
         // Initialize Departure fields
-        departures[i]->when = strdup(cJSON_GetObjectItem(departure_json, "when")->valuestring);
-        departures[i]->plannedWhen = strdup(cJSON_GetObjectItem(departure_json, "plannedWhen")->valuestring);
-        departures[i]->platform = strdup(cJSON_GetObjectItem(departure_json, "platform")->valuestring);
-        departures[i]->plannedplatform = strdup(cJSON_GetObjectItem(departure_json, "plannedPlatform")->valuestring);
+        if(cJSON_GetObjectItem(departure_json, "when") == NULL || cJSON_GetObjectItem(departure_json, "when")->valuestring == NULL) {
+            departures[i]->when = strdup("?");
+        } else {
+            departures[i]->when = strdup(cJSON_GetObjectItem(departure_json, "when")->valuestring);
+        }
+        if(cJSON_GetObjectItem(departure_json, "plannedWhen") == NULL || cJSON_GetObjectItem(departure_json, "plannedWhen")->valuestring == NULL) {
+            departures[i]->when = strdup("?");
+        } else {
+            departures[i]->plannedWhen = strdup(cJSON_GetObjectItem(departure_json, "plannedWhen")->valuestring);
+        }
+        if(cJSON_GetObjectItem(departure_json, "platform") == NULL || cJSON_GetObjectItem(departure_json, "platform")->valuestring == NULL) {
+            departures[i]->when = strdup("?");
+        } else {
+            departures[i]->platform = strdup(cJSON_GetObjectItem(departure_json, "platform")->valuestring);
+        }
+        if(cJSON_GetObjectItem(departure_json, "plannedPlatform")->valuestring == NULL) {
+            departures[i]->plannedplatform = strdup("?");
+        } else {
+            departures[i]->plannedplatform = strdup(cJSON_GetObjectItem(departure_json, "plannedPlatform")->valuestring);
+        }
         departures[i]->direction = strdup(cJSON_GetObjectItem(departure_json, "direction")->valuestring);
         departures[i]->delay = cJSON_GetObjectItem(departure_json, "delay")->valueint;
 
@@ -133,7 +149,11 @@ Departure** loadDepartures(const char* json_data, int* count) {
             departures[i]->line->fahrtNr = strdup(cJSON_GetObjectItem(line_json, "fahrtNr")->valuestring);
             departures[i]->line->name = strdup(cJSON_GetObjectItem(line_json, "name")->valuestring);
             departures[i]->line->id = strdup(cJSON_GetObjectItem(line_json, "id")->valuestring);
-            departures[i]->line->additionalName = strdup(cJSON_GetObjectItem(line_json, "additionalName")->valuestring);
+            if(cJSON_GetObjectItem(line_json, "additionalName") == NULL) {
+                departures[i]->line->additionalName = strdup("?");
+            } else {
+                departures[i]->line->additionalName = strdup(cJSON_GetObjectItem(line_json, "additionalName")->valuestring);
+            }
             departures[i]->line->product = strdup(cJSON_GetObjectItem(line_json, "product")->valuestring);
         }
     }
@@ -150,8 +170,8 @@ Departure** getDepartures(Station* station, int* count) {
     asprintf(&req.URL, "https://v6.db.transport.rest/stops/%s/departures?duration=60&remarks=true&language=en&bus=false&tram=false&results=25", station->id);
 
     makeRequest(&req);
-    printf("yayyyyyy");
-    printf("\n\n%s\n", req.response);
+    //printf("yayyyyyy");
+    //printf("\n\n%s\n", req.response);
     int size;
     Departure** ret = loadDepartures(req.response, &size);
     //printf("%s (%s)", stat->name, stat->id);

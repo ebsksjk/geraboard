@@ -10,31 +10,30 @@
 // Hilfsfunktion, um die Antwort von cURL zu verarbeiten
 
 
-int main(int argc, char** argv) {
-    /*for(int i = 1; i < argc; i++){
-        Request req;
-        req.URL = argv[i];
-        req.response = NULL;
+int main(int c, char** v){
 
-        makeRequest(&req);
+    for(int j = 1; j < c; j++){
+        char* stationname = escapeString(v[j]);
+        printf("unescaped: %s; escaped: %s\n", v[j], stationname);
 
-        cJSON *json = cJSON_Parse(req.response);
+        Station* station = getStation(stationname);
+        printf("bahnhof %d: %s (%s)\n", j, station->name, station->id);
 
-        printf("%s\n", cJSON_Print(json));
-        printf("request (unparsed):\n%s\n", req.response);
+        int dcount;
+        Departure** det = getDepartures(station, &dcount);
 
-        free(req.response);
-    }*/
+        for(int i = 0; i < dcount; i++) {
+            printf("line: %s (%s) -> %s - %s (%s); Gleis %s (%s) (lustige infos: %s)\n", det[i]->line->name, det[i]->line->fahrtNr, det[i]->direction, det[i]->plannedWhen, det[i]->when, det[i]->plannedplatform, det[i]->platform, det[i]->line->additionalName);
+        }
+        for(int i = 0; i < dcount; i++) {
+            freeDeparture(det[i]);
+        }
+        free(det);
+        free(stationname);
+        free(station);
+    }
 
-    const char* unescapedStr = "Gera Süd";
-
-    char* escStr = escapeString(unescapedStr);
-    //printf("\n");
-
-    Station* stat2 = getStation(escStr);
-    printf("sued: %s (%s)\n", stat2->name, stat2->id);
-    //free(stat);
-    free(escStr);
+    /*
 
     int dCount;
     Departure** det = getDepartures(stat2, &dCount);
@@ -47,7 +46,7 @@ int main(int argc, char** argv) {
     for(int i = 0; i < dCount; i++) {
         freeDeparture(det[i]);
     }
-
+    */
 
     return 0;
 }

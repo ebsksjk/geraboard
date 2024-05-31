@@ -28,7 +28,7 @@ size_t write_callback(void *ptr, size_t size, size_t nmemb, char **response) {
     memcpy(*response + old_size, ptr, new_size);
     (*response)[old_size + new_size] = '\0'; // Nullzeichen am Ende setzen
 
-    printf("response: %s\n", *response);
+    //printf("response: %s\n", *response);
     return new_size;
 }
 
@@ -62,7 +62,7 @@ void makeRequest(Request* req) {
         curl_easy_cleanup(curl);
     }
 
-    printf("response in makeRequest: %s\n", req->response);
+    //printf("response in makeRequest: %s\n", req->response);
 }
 
 #endif
