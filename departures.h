@@ -106,28 +106,40 @@ Departure** loadDepartures(const char* json_data, int* count) {
         }
 
         // Initialize Departure fields
-        if(cJSON_GetObjectItem(departure_json, "when") == NULL || cJSON_GetObjectItem(departure_json, "when")->valuestring == NULL) {
+        cJSON* jWhen = cJSON_GetObjectItem(departure_json, "when");
+        if(cJSON_IsNull(jWhen) || cJSON_IsInvalid(jWhen)) {
             departures[i]->when = strdup("?");
         } else {
-            departures[i]->when = strdup(cJSON_GetObjectItem(departure_json, "when")->valuestring);
+            departures[i]->when = strdup(jWhen->valuestring);
             departures[i]->tWhen = getTimeFromDateTime(departures[i]->when);
         }
-        if(cJSON_GetObjectItem(departure_json, "plannedWhen") == NULL || cJSON_GetObjectItem(departure_json, "plannedWhen")->valuestring == NULL) {
+
+        cJSON* jPWhen = cJSON_GetObjectItem(departure_json, "plannedWhen");
+        if(cJSON_IsNull(jPWhen) || cJSON_IsInvalid(jPWhen)) {
             departures[i]->plannedWhen = strdup("?");
         } else {
-            departures[i]->plannedWhen = strdup(cJSON_GetObjectItem(departure_json, "plannedWhen")->valuestring);
+            departures[i]->plannedWhen = strdup(jPWhen->valuestring);
             departures[i]->tPlannedWhen = getTimeFromDateTime(departures[i]->plannedWhen);
         }
-        if(cJSON_GetObjectItem(departure_json, "platform") == NULL || cJSON_GetObjectItem(departure_json, "platform")->valuestring == NULL) {
+        free(jPWhen);
+
+        cJSON* jPlatform = cJSON_GetObjectItem(departure_json, "platform");
+
+        if(cJSON_IsNull(jPlatform) || cJSON_IsInvalid(jPlatform)) {
             departures[i]->platform = strdup("?");
         } else {
-            departures[i]->platform = strdup(cJSON_GetObjectItem(departure_json, "platform")->valuestring);
+            departures[i]->platform = strdup(jPlatform->valuestring);
         }
-        if(cJSON_GetObjectItem(departure_json, "plannedPlatform")->valuestring == NULL) {
+        free(jPlatform);
+
+        cJSON* jPPlatform = cJSON_GetObjectItem(departure_json, "plannedPlatform");
+        if(cJSON_IsNull(jPPlatform) || cJSON_IsInvalid(jPPlatform)) {
             departures[i]->plannedplatform = strdup("?");
         } else {
-            departures[i]->plannedplatform = strdup(cJSON_GetObjectItem(departure_json, "plannedPlatform")->valuestring);
+            departures[i]->plannedplatform = strdup(jPPlatform->valuestring);
         }
+        free(jPPlatform);
+
         departures[i]->direction = strdup(cJSON_GetObjectItem(departure_json, "direction")->valuestring);
         departures[i]->delay = cJSON_GetObjectItem(departure_json, "delay")->valueint;
 
