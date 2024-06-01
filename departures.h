@@ -106,22 +106,25 @@ Departure** loadDepartures(const char* json_data, int* count) {
         }
 
         // Initialize Departure fields
+        //printf(" VOR jWhen: %s\n", cJSON_Print(departure_json));
         cJSON* jWhen = cJSON_GetObjectItem(departure_json, "when");
         if(cJSON_IsNull(jWhen) || cJSON_IsInvalid(jWhen)) {
             departures[i]->when = strdup("?");
+            departures[i]->tWhen = strdup("?");
         } else {
             departures[i]->when = strdup(jWhen->valuestring);
             departures[i]->tWhen = getTimeFromDateTime(departures[i]->when);
         }
 
+        //printf("NACH jWhen%s\n", cJSON_Print(departure_json));
         cJSON* jPWhen = cJSON_GetObjectItem(departure_json, "plannedWhen");
         if(cJSON_IsNull(jPWhen) || cJSON_IsInvalid(jPWhen)) {
             departures[i]->plannedWhen = strdup("?");
+            departures[i]->tPlannedWhen = strdup("?");
         } else {
             departures[i]->plannedWhen = strdup(jPWhen->valuestring);
             departures[i]->tPlannedWhen = getTimeFromDateTime(departures[i]->plannedWhen);
         }
-        free(jPWhen);
 
         cJSON* jPlatform = cJSON_GetObjectItem(departure_json, "platform");
 
@@ -130,7 +133,6 @@ Departure** loadDepartures(const char* json_data, int* count) {
         } else {
             departures[i]->platform = strdup(jPlatform->valuestring);
         }
-        free(jPlatform);
 
         cJSON* jPPlatform = cJSON_GetObjectItem(departure_json, "plannedPlatform");
         if(cJSON_IsNull(jPPlatform) || cJSON_IsInvalid(jPPlatform)) {
@@ -138,7 +140,6 @@ Departure** loadDepartures(const char* json_data, int* count) {
         } else {
             departures[i]->plannedplatform = strdup(jPPlatform->valuestring);
         }
-        free(jPPlatform);
 
         departures[i]->direction = strdup(cJSON_GetObjectItem(departure_json, "direction")->valuestring);
         departures[i]->delay = cJSON_GetObjectItem(departure_json, "delay")->valueint;

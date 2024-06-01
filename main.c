@@ -3,7 +3,7 @@
 #include "departures.h"
 #include "utils.h"
 
-#define MAX_DEP_COUNT 7
+#define MAX_DEP_COUNT 10
 
 
 
