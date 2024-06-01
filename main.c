@@ -1,9 +1,11 @@
 #include <stdio.h>
+#include <string.h>
+#include <stdbool.h>
 #include "station.h"
 #include "departures.h"
 #include "utils.h"
 
-#define MAX_DEP_COUNT 10
+#define MAX_DEP_COUNT 5
 #define DEF_LANG "de"
 //other: en
 
@@ -12,29 +14,61 @@ int main(int c, char** v){
 
     for(int j = 1; j < c; j++){
         char* stationname = escapeString(v[j]);
-        printf("unescaped: %s; escaped: %s\n", v[j], stationname);
-
+        //printf("unescaped: %s; escaped: %s\n", v[j], stationname);
         Station* station = getStation(stationname);
-        printf("bahnhof %d: %s (%s)\n", j, station->name, station->id);
+        //printf("bahnhof %d: %s (%s)\n", j, station->name, station->id);
 
-        int dcount, rcount;
-        Departure** det = getDepartures(station, &dcount, &rcount, MAX_DEP_COUNT, DEF_LANG);
+        int dcount;
+        Departure** det = getDepartures(station, &dcount, MAX_DEP_COUNT, DEF_LANG);
 
         for(int i = 0; i < dcount; i++) {
-            printf("line: %s (%s) -> %s - um %s", det[i]->line->name, det[i]->line->fahrtNr, det[i]->direction, det[i]->tPlannedWhen);
-            if(det[i]->delay/60) {
-                printf("; heute um: %s; (dh, eine Verspätung von +%d)", det[i]->tWhen, det[i]->delay/60);
-
+            if(det[i] == NULL) {
+                printf("ja nun\n");
+                continue;;
             }
-            printf(" von Gleis %s (%s) (lustige infos: %s)\n", det[i]->plannedplatform, det[i]->platform, det[i]->line->additionalName);
-            for(int y = 0; y <= rcount; y++) {
-                if(!((det[i]->remarks[y] == NULL) || (det[i]->remarks[y]->text == NULL))) {
-                    printf("Hinweis: (type)%s (code)%s (text)%s\n", det[i]->remarks[y]->type, det[i]->remarks[y]->code, det[i]->remarks[y]->text);
+            int rcount = det[i]->rcount;
+            bool cancelled = false;
+            bool delayed = false;
+            bool changedP = false;
+
+            for(int y = 0; y < rcount; y++) {
+                if(!(strcmp(det[i]->remarks[y]->code, "cancelled"))) {
+                    cancelled = true;
+                    break;
                 }
             }
-        }
-        for(int i = 0; i < dcount; i++) {
-            freeDeparture(det[i], rcount);
+            if((strcmp(det[i]->plannedplatform, det[i]->platform))) {
+                changedP = true;
+            }
+            if(det[i]->delay/60) {
+                delayed = true;
+            }
+
+            if(cancelled) {
+                printf(" - %s (%s) nach (%s) um (%s) fällt heute aus.\n", det[i]->line->name, det[i]->line->fahrtNr, det[i]->direction, det[i]->tPlannedWhen);
+                continue;
+            }
+            printf(" - %s (%s) nach %s ", det[i]->line->name, det[i]->line->fahrtNr, det[i]->direction);
+            if(delayed) {
+                printf("heute um %s (ursprünglich %s), ca. %d Minuten verspätet ", det[i]->tWhen, det[i]->tPlannedWhen, det[i]->delay/60);
+            } else {
+                printf("heute um %s ", det[i]->tPlannedWhen);
+            }
+            if(changedP) {
+                printf("abweichend auf Gleis %s.\n", det[i]->platform);
+            } else {
+                printf("auf Gleis %s\n", det[i]->platform);
+            }
+
+            for(int y = 0; y <= rcount; y++) {
+                if(!((det[i]->remarks[y] == NULL) || (det[i]->remarks[y]->text == NULL || !(strcmp(det[i]->remarks[y]->code, "cancelled"))))) {
+                    printf("\tHinweis: %s\n", det[i]->remarks[y]->text);
+                }
+
+            }
+            for(int y = 0; y < dcount; y++) {
+                freeDeparture(det[y], rcount);
+            }
         }
         free(det);
         free(stationname);

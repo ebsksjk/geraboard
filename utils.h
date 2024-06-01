@@ -54,7 +54,7 @@ char* escapeWideCharString(wchar_t* wstr){
         escStr = restrcat(escStr, escapeWChar(*s));
     }
 
-    printf("escaped String: %s (%ld chars)\n", escStr, strlen(escStr));
+    //printf("escaped String: %s (%ld chars)\n", escStr, strlen(escStr));
 
     return escStr;
 }

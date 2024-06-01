@@ -61,13 +61,18 @@ typedef struct Departure{
     char* direction;
     int delay;
     Remark** remarks;
+    int rcount;
 } Departure;
 
 /////////////////////////////////////////////////////////////////
 
-Departure** loadDepartures(const char* json_data, int* dCount, int* rCount) {
+Departure** loadDepartures(const char* json_data, int* dCount) {
     cJSON* root = cJSON_Parse(json_data);
     //printf("json: %s\n",json_data);
+    FILE* testout = fopen("out.json", "w");
+    fprintf(testout, "%s", json_data);
+    fclose(testout);
+
     if (root == NULL) {
         printf("Error before: [%s]\n", cJSON_GetErrorPtr());
         return NULL;
@@ -145,6 +150,7 @@ Departure** loadDepartures(const char* json_data, int* dCount, int* rCount) {
         if(cJSON_IsNull(jPPlatform) || cJSON_IsInvalid(jPPlatform)) {
             departures[i]->plannedplatform = strdup("?");
         } else {
+            printf("%s\n", jPPlatform->valuestring);
             departures[i]->plannedplatform = strdup(jPPlatform->valuestring);
         }
 
@@ -186,7 +192,7 @@ Departure** loadDepartures(const char* json_data, int* dCount, int* rCount) {
         //parse remarks
         cJSON* remarks_json = cJSON_GetObjectItem(departure_json, "remarks");
         int rsize = cJSON_GetArraySize(remarks_json);
-        *rCount = rsize;
+        departures[i]->rcount = rsize;
         departures[i]->remarks = calloc(rsize, sizeof(Remark));
         if(departures[i]->remarks == NULL) {
             printf("aaaaaaaaa\n");
@@ -198,23 +204,23 @@ Departure** loadDepartures(const char* json_data, int* dCount, int* rCount) {
             cJSON* jType = cJSON_GetObjectItem(remark_json, "type");
             cJSON* jCode = cJSON_GetObjectItem(remark_json, "code");
             cJSON* jText = cJSON_GetObjectItem(remark_json, "text");
-            //printf("jtype: %s\n", jType->valuestring);
-            //printf("jcode: %s\n", jCode->valuestring);
-            //printf("jtext: %s\n", jText->valuestring);
 
             if(cJSON_IsString(jType) && !cJSON_IsNull(jType)) {
+                printf("jtype: %s\n", jType->valuestring);
                 departures[i]->remarks[j]->type = strdup(jType->valuestring);
             } else {
                 departures[i]->remarks[j]->type = strdup("?");
             }
 
             if(cJSON_IsString(jCode) && !cJSON_IsNull(jCode)) {
+                printf("jcode: %s\n", jCode->valuestring);
                 departures[i]->remarks[j]->code = strdup(jCode->valuestring);
             } else {
                 departures[i]->remarks[j]->code = strdup("?");
             }
 
             if(cJSON_IsString(jText) && !cJSON_IsNull(jText)) {
+                printf("jtext: %s\n", jText->valuestring);
                 departures[i]->remarks[j]->text = strdup(jText->valuestring);
             } else {
                 departures[i]->remarks[j]->text = NULL;
@@ -236,22 +242,21 @@ Departure** loadDepartures(const char* json_data, int* dCount, int* rCount) {
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Departure** getDepartures(Station* station, int* sCount, int* rCount, int maxS, const char* lang) {
+Departure** getDepartures(Station* station, int* sCount, int maxS, const char* lang) {
     Request req;
     asprintf(&req.URL, "https://v6.db.transport.rest/stops/%s/departures?duration=60&remarks=true&bus=false&tram=false&results=%d&language=\"%s\"", station->id, maxS, lang);
-    printf("req: %s\n", req.URL);
+    //printf("req: %s\n", req.URL);
     makeRequest(&req);
     //printf("yayyyyyy");
     //printf("\n\n%s\n", req.response);
-    int dSize, rSize;
-    Departure** ret = loadDepartures(req.response, &dSize, &rSize);
+    int dSize;
+    Departure** ret = loadDepartures(req.response, &dSize);
     //printf("%s (%s)", stat->name, stat->id);
 
     free(req.response);
     free(req.URL);
 
     *sCount = dSize;
-    *rCount = rSize;
     return ret;
 }
 
