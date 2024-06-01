@@ -88,4 +88,15 @@ char* escapeString(const char* str){
     return ret;
 }
 
+char* getTimeFromDateTime(char* datetime) {
+    char* ret = calloc(6, sizeof(char));
+    char* start = &datetime[11];
+    char* end = &datetime[16];
+    for(int i = 0; start < end; start++, i++) {
+        ret[i] = *start;
+    }
+
+    return ret;
+}
+
 #endif

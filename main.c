@@ -3,11 +3,8 @@
 #include "departures.h"
 #include "utils.h"
 
+#define MAX_DEP_COUNT 7
 
-#define MAX_RESPONSE_SIZE 1024
-
-
-// Hilfsfunktion, um die Antwort von cURL zu verarbeiten
 
 
 int main(int c, char** v){
@@ -20,10 +17,10 @@ int main(int c, char** v){
         printf("bahnhof %d: %s (%s)\n", j, station->name, station->id);
 
         int dcount;
-        Departure** det = getDepartures(station, &dcount);
+        Departure** det = getDepartures(station, &dcount, MAX_DEP_COUNT);
 
         for(int i = 0; i < dcount; i++) {
-            printf("line: %s (%s) -> %s - %s (%s); Gleis %s (%s) (lustige infos: %s)\n", det[i]->line->name, det[i]->line->fahrtNr, det[i]->direction, det[i]->plannedWhen, det[i]->when, det[i]->plannedplatform, det[i]->platform, det[i]->line->additionalName);
+            printf("line: %s (%s) -> %s - um %s (actual: %s; Verspätung von %d m.); Gleis %s (%s) (lustige infos: %s)\n", det[i]->line->name, det[i]->line->fahrtNr, det[i]->direction, det[i]->tPlannedWhen, det[i]->tWhen, det[i]->delay/60, det[i]->plannedplatform, det[i]->platform, det[i]->line->additionalName);
         }
         for(int i = 0; i < dcount; i++) {
             freeDeparture(det[i]);

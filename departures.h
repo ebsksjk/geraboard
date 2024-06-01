@@ -1,5 +1,7 @@
 #ifndef departures_h
     #define departures_h
+
+#include "utils.h"
 /* example:
 * "departures": [
 {
@@ -44,7 +46,9 @@ typedef struct Line {
 
 typedef struct Departure{
     char* when;
+    char* tWhen;
     char* plannedWhen;
+    char* tPlannedWhen;
     char* platform;
     char* plannedplatform;
     Line* line;
@@ -106,14 +110,16 @@ Departure** loadDepartures(const char* json_data, int* count) {
             departures[i]->when = strdup("?");
         } else {
             departures[i]->when = strdup(cJSON_GetObjectItem(departure_json, "when")->valuestring);
+            departures[i]->tWhen = getTimeFromDateTime(departures[i]->when);
         }
         if(cJSON_GetObjectItem(departure_json, "plannedWhen") == NULL || cJSON_GetObjectItem(departure_json, "plannedWhen")->valuestring == NULL) {
-            departures[i]->when = strdup("?");
+            departures[i]->plannedWhen = strdup("?");
         } else {
             departures[i]->plannedWhen = strdup(cJSON_GetObjectItem(departure_json, "plannedWhen")->valuestring);
+            departures[i]->tPlannedWhen = getTimeFromDateTime(departures[i]->plannedWhen);
         }
         if(cJSON_GetObjectItem(departure_json, "platform") == NULL || cJSON_GetObjectItem(departure_json, "platform")->valuestring == NULL) {
-            departures[i]->when = strdup("?");
+            departures[i]->platform = strdup("?");
         } else {
             departures[i]->platform = strdup(cJSON_GetObjectItem(departure_json, "platform")->valuestring);
         }
@@ -165,9 +171,9 @@ Departure** loadDepartures(const char* json_data, int* count) {
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Departure** getDepartures(Station* station, int* count) {
+Departure** getDepartures(Station* station, int* count, int maxS) {
     Request req;
-    asprintf(&req.URL, "https://v6.db.transport.rest/stops/%s/departures?duration=60&remarks=true&language=en&bus=false&tram=false&results=25", station->id);
+    asprintf(&req.URL, "https://v6.db.transport.rest/stops/%s/departures?duration=60&remarks=true&language=en&bus=false&tram=false&results=%d", station->id, maxS);
 
     makeRequest(&req);
     //printf("yayyyyyy");
@@ -190,7 +196,9 @@ void freeDeparture(Departure* departure) {
 
     // Freeing fields of the Departure struct
     free(departure->when);
+    free(departure->tWhen);
     free(departure->plannedWhen);
+    free(departure->tPlannedWhen);
     free(departure->platform);
     free(departure->plannedplatform);
     free(departure->direction);
