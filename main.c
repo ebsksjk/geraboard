@@ -5,7 +5,7 @@
 #include "departures.h"
 #include "utils.h"
 
-#define MAX_DEP_COUNT 5
+#define MAX_DEP_COUNT 10
 #define DEF_LANG "de"
 //other: en
 
@@ -24,12 +24,14 @@ int main(int c, char** v){
         for(int i = 0; i < dcount; i++) {
             if(det[i] == NULL) {
                 printf("ja nun\n");
-                continue;;
+                continue;
             }
             int rcount = det[i]->rcount;
             bool cancelled = false;
             bool delayed = false;
             bool changedP = false;
+
+            //printf("%s -> %s, %s (%s) - %s (%s)\n", det[i]->line->name, det[i]->direction, det[i]->tPlannedWhen, det[i]->tWhen, det[i]->plannedplatform, det[i]->platform);
 
             for(int y = 0; y < rcount; y++) {
                 if(!(strcmp(det[i]->remarks[y]->code, "cancelled"))) {
@@ -60,15 +62,26 @@ int main(int c, char** v){
                 printf("auf Gleis %s\n", det[i]->platform);
             }
 
-            for(int y = 0; y <= rcount; y++) {
-                if(!((det[i]->remarks[y] == NULL) || (det[i]->remarks[y]->text == NULL || !(strcmp(det[i]->remarks[y]->code, "cancelled"))))) {
+            printf("Hinweise für %s: %d\n", det[i]->line->name, det[i]->rcount);
+            for(int y = 0; y < det[i]->rcount; y++) {
+                printf("hinweis nr: %d\n", y);
+                /*if(!((det[i]->remarks[y] == NULL) || (det[i]->remarks[y]->text == NULL || !(strcmp(det[i]->remarks[y]->code, "cancelled"))))) {
+                    printf("\tHinweis: %s\n", det[i]->remarks[y]->text);
+                }*/
+                if(det[i]->remarks[y] != NULL && det[i]->remarks[y]->type != NULL) {
+                    printf("\tHinweis: %s\n", det[i]->remarks[y]->type);
+                }
+                if(det[i]->remarks[y] != NULL && det[i]->remarks[y]->code != NULL) {
+                    printf("\tHinweis: %s\n", det[i]->remarks[y]->code);
+                }
+                if(det[i]->remarks[y] != NULL && det[i]->remarks[y]->text != NULL) {
                     printf("\tHinweis: %s\n", det[i]->remarks[y]->text);
                 }
+            }
 
-            }
-            for(int y = 0; y < dcount; y++) {
-                freeDeparture(det[y], rcount);
-            }
+        }
+        for(int y = 0; y < dcount; y++) {
+            freeDeparture(det[y], det[y]->rcount);
         }
         free(det);
         free(stationname);

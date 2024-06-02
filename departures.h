@@ -150,7 +150,7 @@ Departure** loadDepartures(const char* json_data, int* dCount) {
         if(cJSON_IsNull(jPPlatform) || cJSON_IsInvalid(jPPlatform)) {
             departures[i]->plannedplatform = strdup("?");
         } else {
-            printf("%s\n", jPPlatform->valuestring);
+            //printf("%s\n", jPPlatform->valuestring);
             departures[i]->plannedplatform = strdup(jPPlatform->valuestring);
         }
 
@@ -192,6 +192,7 @@ Departure** loadDepartures(const char* json_data, int* dCount) {
         //parse remarks
         cJSON* remarks_json = cJSON_GetObjectItem(departure_json, "remarks");
         int rsize = cJSON_GetArraySize(remarks_json);
+        printf("remarks: %s\n", cJSON_Print(remarks_json));
         departures[i]->rcount = rsize;
         departures[i]->remarks = calloc(rsize, sizeof(Remark));
         if(departures[i]->remarks == NULL) {
@@ -206,21 +207,21 @@ Departure** loadDepartures(const char* json_data, int* dCount) {
             cJSON* jText = cJSON_GetObjectItem(remark_json, "text");
 
             if(cJSON_IsString(jType) && !cJSON_IsNull(jType)) {
-                printf("jtype: %s\n", jType->valuestring);
+                //printf("jtype: %s\n", jType->valuestring);
                 departures[i]->remarks[j]->type = strdup(jType->valuestring);
             } else {
                 departures[i]->remarks[j]->type = strdup("?");
             }
 
             if(cJSON_IsString(jCode) && !cJSON_IsNull(jCode)) {
-                printf("jcode: %s\n", jCode->valuestring);
+                //printf("jcode: %s\n", jCode->valuestring);
                 departures[i]->remarks[j]->code = strdup(jCode->valuestring);
             } else {
                 departures[i]->remarks[j]->code = strdup("?");
             }
 
             if(cJSON_IsString(jText) && !cJSON_IsNull(jText)) {
-                printf("jtext: %s\n", jText->valuestring);
+                //printf("jtext: %s\n", jText->valuestring);
                 departures[i]->remarks[j]->text = strdup(jText->valuestring);
             } else {
                 departures[i]->remarks[j]->text = NULL;
