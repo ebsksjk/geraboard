@@ -20,7 +20,12 @@ int main(int c, char** v){
 
         int dcount;
         Departure** det = getDepartures(station, &dcount, MAX_DEP_COUNT, DEF_LANG);
-
+	
+	if(det == NULL){
+		printf("no departures could be loaded. aborting.\n");
+		return -1;
+	}
+	printf("Abfahrten für %s:\n", station->name);
         for(int i = 0; i < dcount; i++) {
             if(det[i] == NULL) {
                 printf("ja nun\n");

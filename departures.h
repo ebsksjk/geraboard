@@ -179,14 +179,30 @@ Departure** loadDepartures(const char* json_data, int* dCount) {
 
             // Initialize Line fields
             departures[i]->line->fahrtNr = strdup(cJSON_GetObjectItem(line_json, "fahrtNr")->valuestring);
-            departures[i]->line->name = strdup(cJSON_GetObjectItem(line_json, "name")->valuestring);
-            departures[i]->line->id = strdup(cJSON_GetObjectItem(line_json, "id")->valuestring);
+            cJSON* linename = cJSON_GetObjectItem(line_json, "name");
+            if(!(cJSON_IsInvalid(linename)) && !(cJSON_IsNull(linename))){
+                departures[i]->line->name = strdup(linename->valuestring);
+            }else{
+                departures[i]->line->name = strdup("?");
+            }
+            cJSON* lineid = cJSON_GetObjectItem(line_json, "id");
+            if(!(cJSON_IsInvalid(lineid)) && !(cJSON_IsNull(lineid))){
+                departures[i]->line->id = strdup(lineid->valuestring);
+            }else{
+                departures[i]->line->id = strdup("?");
+            }
             if(cJSON_GetObjectItem(line_json, "additionalName") == NULL) {
                 departures[i]->line->additionalName = strdup("?");
             } else {
                 departures[i]->line->additionalName = strdup(cJSON_GetObjectItem(line_json, "additionalName")->valuestring);
             }
-            departures[i]->line->product = strdup(cJSON_GetObjectItem(line_json, "product")->valuestring);
+
+            cJSON* lineprod = cJSON_GetObjectItem(line_json, "product");
+            if(!(cJSON_IsInvalid(lineprod)) && !(cJSON_IsNull(lineprod))){
+                departures[i]->line->product = strdup(lineprod->valuestring);
+            }else{
+                departures[i]->line->product = strdup("?");
+            }
         }
 
         //parse remarks
@@ -245,7 +261,8 @@ Departure** loadDepartures(const char* json_data, int* dCount) {
 
 Departure** getDepartures(Station* station, int* sCount, int maxS, const char* lang) {
     Request req;
-    asprintf(&req.URL, "https://v6.db.transport.rest/stops/%s/departures?duration=60&remarks=true&bus=false&tram=false&results=%d&language=\"%s\"", station->id, maxS, lang);
+    asprintf(&req.URL, "https://v6.db.transport.rest/stops/%s/departures?duration=60&remarks=true&bus=false&results=%d&language=\"%s\"", station->id, maxS, lang);
+    //&tram=false
     //printf("req: %s\n", req.URL);
     makeRequest(&req);
     //printf("yayyyyyy");
