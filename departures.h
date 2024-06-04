@@ -208,7 +208,7 @@ Departure** loadDepartures(const char* json_data, int* dCount) {
         //parse remarks
         cJSON* remarks_json = cJSON_GetObjectItem(departure_json, "remarks");
         int rsize = cJSON_GetArraySize(remarks_json);
-        printf("remarks: %s\n", cJSON_Print(remarks_json));
+        printf("remarks für %s: %s\n", departures[i]->line->name, cJSON_Print(remarks_json));
         departures[i]->rcount = rsize;
         departures[i]->remarks = calloc(rsize, sizeof(Remark));
         if(departures[i]->remarks == NULL) {
@@ -261,7 +261,7 @@ Departure** loadDepartures(const char* json_data, int* dCount) {
 
 Departure** getDepartures(Station* station, int* sCount, int maxS, const char* lang) {
     Request req;
-    asprintf(&req.URL, "https://v6.db.transport.rest/stops/%s/departures?duration=60&remarks=true&bus=false&results=%d&language=\"%s\"", station->id, maxS, lang);
+    asprintf(&req.URL, "https://v6.db.transport.rest/stops/%s/departures?duration=60&remarks=true&bus=false&tram=false&results=%d&language=\"%s\"", station->id, maxS, lang);
     //&tram=false
     //printf("req: %s\n", req.URL);
     makeRequest(&req);
