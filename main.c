@@ -110,6 +110,7 @@ int printDepartures(const char* sname) {
 
 
 int main(const int c, char** v){
+    return 1;
     int ret = 0;
 
     if(c == 1) {
