@@ -5,7 +5,7 @@ all: geraboard
 
 # Define how to build the main program
 geraboard: src/main.c src/dep/cJSON.c
-	@mkdir bin
+	@if [ ! -d bin ]; then mkdir bin; fi
 	@gcc -o bin/geraboard src/main.c src/dep/cJSON.c -lcurl -lc -g
 
 # Define the test target
@@ -25,19 +25,19 @@ test: clean geraboard
 
 # Define a clean target to remove generated files
 clean:
-	@rm -f geraboard
+	@rm -f bin/geraboard
 	@rm -r bin
 
 debug: src/main.c src/dep/cJSON.c
-	@mkdir bin
+	@if [ ! -d bin ]; then mkdir bin; fi
 	@gcc -o bin/geraboard src/main.c src/dep/cJSON.c -lcurl -lc -g
 
 memsafe: src/main.c src/dep/cJSON.c
-	@mkdir bin
+	@if [ ! -d bin ]; then mkdir bin; fi
 	@gcc -o bin/geraboard src/main.c src/dep/cJSON.c -lcurl -lc -fsanitize=address -g
 
 strict: src/main.c src/dep/cJSON.c
-	@mkdir bin
+	@if [ ! -d bin ]; then mkdir bin; fi
 	@gcc -o bin/geraboard src/main.c src/dep/cJSON.c -lcurl -lc -g -Wall -Wpedantic
 
 run:

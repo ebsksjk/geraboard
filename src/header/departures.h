@@ -1,6 +1,7 @@
 #ifndef departures_h
     #define departures_h
 
+#include <ctype.h>
 #include "utils.h"
 #include "station.h"
 #include "../dep/cJSON.h"
@@ -36,7 +37,27 @@
 }]
 
 */
+//text
+#define BLK "\e[0;30m"
+#define RED "\e[0;31m"
+#define GRN "\e[0;32m"
+#define YEL "\e[0;33m"
+#define BLU "\e[0;34m"
+#define MAG "\e[0;35m"
+#define CYN "\e[0;36m"
+#define WHT "\e[0;37m"
 
+//back
+#define BLKB "\e[40m"
+#define REDB "\e[41m"
+#define GRNB "\e[42m"
+#define YELB "\e[43m"
+#define BLUB "\e[44m"
+#define MAGB "\e[45m"
+#define CYNB "\e[46m"
+#define WHTB "\e[47m"
+
+#define RESET "\e[0m"
 
 typedef struct Line {
     char* fahrtNr;
@@ -372,7 +393,7 @@ int printDepartures(const char* sname, bool local) {
         printf("no departures could be loaded. aborting.\n");
         return 1;
     }
-    printf("Abfahrten für %s:\n", station->name);
+    printf("Abfahrten für  %s:\n", station->name);
     for(int i = 0; i < dcount; i++) {
         if(det[i] == NULL) {
             printf("ja nun\n");
@@ -397,12 +418,12 @@ int printDepartures(const char* sname, bool local) {
         }
 
         if(cancelled) {
-            printf(" - %s (%s) nach (%s) um (%s) fällt heute aus.\n", det[i]->line->name, det[i]->line->fahrtNr, det[i]->direction, det[i]->tPlannedWhen);
+            printf(" - " WHT REDB "%s" RESET RESET " (%s) nach (%s) um (%s) fällt heute aus.\n", det[i]->line->name, det[i]->line->fahrtNr, det[i]->direction, det[i]->tPlannedWhen);
             printRemarks(det[i]);
             continue;
         }
 
-        printf(" - %s (%s) nach %s ", det[i]->line->name, det[i]->line->fahrtNr, det[i]->direction);
+        printf(" - " WHT REDB "%s" RESET RESET " (%s) nach %s ", det[i]->line->name, det[i]->line->fahrtNr, det[i]->direction);
         if(delayed) {
             printf("heute um %s (ursprünglich %s), ca. %d Minuten verspätet ", det[i]->tWhen, det[i]->tPlannedWhen, det[i]->delay/60);
         } else {
