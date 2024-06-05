@@ -298,10 +298,13 @@ Departure** loadDepartures(const char* json_data, int* dCount) {
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Departure** getDepartures(Station* station, int* sCount, int maxS, const char* lang) {
+Departure** getDepartures(Station* station, int* sCount, int maxS, const char* lang, bool local) {
     Request req;
-    asprintf(&req.URL, "https://v6.db.transport.rest/stops/%s/departures?duration=60&remarks=true&bus=false&tram=false&results=%d&language=\"%s\"", station->id, maxS, lang);
-    //&tram=false
+    if(local) {
+        asprintf(&req.URL, "https://v6.db.transport.rest/stops/%s/departures?duration=60&remarks=true&suburban=false&regional=false&regionalExpress=false&national=false&results=%d&language=\"%s\"", station->id, maxS, lang);
+    } else {
+        asprintf(&req.URL, "https://v6.db.transport.rest/stops/%s/departures?duration=60&remarks=true&bus=false&tram=false&results=%d&language=\"%s\"", station->id, maxS, lang);
+    }//&tram=false
     //printf("req: %s\n", req.URL);
     makeRequest(&req);
     //printf("yayyyyyy");
@@ -359,11 +362,11 @@ void freeDeparture(Departure* departure, int rsize) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-int printDepartures(const char* sname) {
+int printDepartures(const char* sname, bool local) {
     const char* stationname = escapeString(sname);
     Station* station = getStation(stationname);
     int dcount;
-    Departure** det = getDepartures(station, &dcount, MAX_DEP_COUNT, DEF_LANG);
+    Departure** det = getDepartures(station, &dcount, MAX_DEP_COUNT, DEF_LANG, local);
 
     if(det == NULL){
         printf("no departures could be loaded. aborting.\n");
