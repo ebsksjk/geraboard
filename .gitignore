@@ -1,4 +1,6 @@
 old
+bin
+bin/*
 geraboard
 .vscode
 geraboard12

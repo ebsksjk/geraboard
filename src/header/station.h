@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <locale.h>
 #include "requests.h"
-#include "cJSON.h"
+#include "../dep/cJSON.h"
 
 /* example JSON:
 [{

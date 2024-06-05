@@ -2,9 +2,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
-#include "station.h"
-#include "departures.h"
-#include "utils.h"
+#include "header/station.h"
+#include "header/departures.h"
+#include "header/utils.h"
 
 #define MAX_DEP_COUNT 10
 #define MAX_STRING_W 100
