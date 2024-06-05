@@ -1,6 +1,8 @@
 old
 bin
 bin/*
+.idea
+.idea/*
 geraboard
 .vscode
 geraboard12
