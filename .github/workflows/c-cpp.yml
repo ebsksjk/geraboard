@@ -17,3 +17,5 @@ jobs:
       run: sudo ./configure.sh
     - name: make
       run: make all
+    - name: test
+      run: make test
