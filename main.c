@@ -50,6 +50,25 @@ int main(int c, char** v){
 
                 if(cancelled) {
                     printf(" - %s (%s) nach (%s) um (%s) fällt heute aus.\n", det[i]->line->name, det[i]->line->fahrtNr, det[i]->direction, det[i]->tPlannedWhen);
+                    for(int y = 0; y < det[i]->rcount; y++) {
+                        /*if(det[i]->remarks[y] != NULL) {
+                            printf("\tHinweis: (type)%s; (code)%s; (text)%s\n", det[i]->remarks[y]->type, det[i]->remarks[y]->code, det[i]->remarks[y]->text);
+                        }
+                        printf("hinweis nr: %d\n", y);*/
+                        if(!((det[i]->remarks[y] == NULL) || (det[i]->remarks[y]->text == NULL || !(strcmp(det[i]->remarks[y]->code, "cancelled"))))) {
+                            printf("\tHinweis zu %s: %s (%s)\n", det[i]->remarks[y]->type, det[i]->remarks[y]->text, det[i]->remarks[y]->code);
+                        }
+                        /*if(det[i]->remarks[y] != NULL && det[i]->remarks[y]->type != NULL) {
+                            printf("\tHinweis: %s\n", det[i]->remarks[y]->type);
+                        }
+                        if(det[i]->remarks[y] != NULL && det[i]->remarks[y]->code != NULL) {
+                            printf("\tHinweis: %s\n", det[i]->remarks[y]->code);
+                        }
+                        if(det[i]->remarks[y] != NULL && det[i]->remarks[y]->text != NULL) {
+                            printf("\tHinweis: %s\n", det[i]->remarks[y]->text);
+                        }*/
+                    }
+
                     continue;
                 }
                 printf(" - %s (%s) nach %s ", det[i]->line->name, det[i]->line->fahrtNr, det[i]->direction);
@@ -66,10 +85,10 @@ int main(int c, char** v){
 
                 //printf("Hinweise für %s: %d\n", det[i]->line->name, det[i]->rcount);
                 for(int y = 0; y < det[i]->rcount; y++) {
-                    if(det[i]->remarks[y] != NULL) {
+                    /*if(det[i]->remarks[y] != NULL) {
                         printf("\tHinweis: (type)%s; (code)%s; (text)%s\n", det[i]->remarks[y]->type, det[i]->remarks[y]->code, det[i]->remarks[y]->text);
                     }
-                    printf("hinweis nr: %d\n", y);
+                    printf("hinweis nr: %d\n", y);*/
                     /*if(!((det[i]->remarks[y] == NULL) || (det[i]->remarks[y]->text == NULL || !(strcmp(det[i]->remarks[y]->code, "cancelled"))))) {
                         printf("\tHinweis: %s\n", det[i]->remarks[y]->text);
                     }*/
@@ -82,6 +101,9 @@ int main(int c, char** v){
                     if(det[i]->remarks[y] != NULL && det[i]->remarks[y]->text != NULL) {
                         printf("\tHinweis: %s\n", det[i]->remarks[y]->text);
                     }*/
+                    if(!((det[i]->remarks[y] == NULL) || (det[i]->remarks[y]->text == NULL || !(strcmp(det[i]->remarks[y]->code, "cancelled"))))) {
+                        printf("\tHinweis zu %s: %s (%s)\n", det[i]->remarks[y]->type, det[i]->remarks[y]->text, det[i]->remarks[y]->code);
+                    }
                 }
 
             }
@@ -135,6 +157,11 @@ int main(int c, char** v){
 
                 if(cancelled) {
                     printf(" - %s (%s) nach (%s) um (%s) fällt heute aus.\n", det[i]->line->name, det[i]->line->fahrtNr, det[i]->direction, det[i]->tPlannedWhen);
+                    for(int y = 0; y < det[i]->rcount; y++) {
+                        if(!((det[i]->remarks[y] == NULL) || (det[i]->remarks[y]->text == NULL || !(strcmp(det[i]->remarks[y]->code, "cancelled"))))) {
+                            printf("\tHinweis zu %s: %s (%s)\n", det[i]->remarks[y]->type, det[i]->remarks[y]->text, det[i]->remarks[y]->code);
+                        }
+                    }
                     continue;
                 }
                 printf(" - %s (%s) nach %s ", det[i]->line->name, det[i]->line->fahrtNr, det[i]->direction);
@@ -151,7 +178,7 @@ int main(int c, char** v){
 
                 //printf("Hinweise für %s: %d\n", det[i]->line->name, det[i]->rcount);
                 for(int y = 0; y < det[i]->rcount; y++) {
-                    if(det[i]->remarks[y] != NULL) {
+                    /*if(det[i]->remarks[y] != NULL) {
                         printf("\tHinweis: (type)%s; (code)%s; (text)%s\n", det[i]->remarks[y]->type, det[i]->remarks[y]->code, det[i]->remarks[y]->text);
                     }
                     printf("hinweis nr: %d\n", y);
@@ -167,6 +194,9 @@ int main(int c, char** v){
                     if(det[i]->remarks[y] != NULL && det[i]->remarks[y]->text != NULL) {
                         printf("\tHinweis: %s\n", det[i]->remarks[y]->text);
                     }*/
+                    if(!((det[i]->remarks[y] == NULL) || (det[i]->remarks[y]->text == NULL || !(strcmp(det[i]->remarks[y]->code, "cancelled"))))) {
+                        printf("\tHinweis zu %s: %s (%s)\n", det[i]->remarks[y]->type, det[i]->remarks[y]->text, det[i]->remarks[y]->code);
+                    }
                 }
 
             }

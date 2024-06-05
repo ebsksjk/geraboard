@@ -208,49 +208,51 @@ Departure** loadDepartures(const char* json_data, int* dCount) {
         //parse remarks
         cJSON* remarks_json = cJSON_GetObjectItem(departure_json, "remarks");
         int rsize = cJSON_GetArraySize(remarks_json);
-        printf("remarks für %s: %s\n", departures[i]->line->name, cJSON_Print(remarks_json));
+        //printf("remarks für %s: %s\n", departures[i]->line->name, cJSON_Print(remarks_json));
         departures[i]->rcount = rsize;
         departures[i]->remarks = calloc(rsize, sizeof(Remark));
         if(departures[i]->remarks == NULL) {
             printf("aaaaaaaaa\n");
         }
-        for (int j = 0; j < rsize; ++j) {
+        for (int j = 0; j < rsize; j++) {
             departures[i]->remarks[j] = malloc(sizeof(Remark));
-            cJSON* remark_json = cJSON_GetArrayItem(remarks_json, i);
+            cJSON* remark_json = cJSON_GetArrayItem(remarks_json, j);
 
             cJSON* jType = cJSON_GetObjectItem(remark_json, "type");
             cJSON* jCode = cJSON_GetObjectItem(remark_json, "code");
             cJSON* jText = cJSON_GetObjectItem(remark_json, "text");
 
-            if(cJSON_IsString(jType) && !cJSON_IsNull(jType)) {
+
+            //printf("jType o: %s\n", cJSON_Print(jType));
+            //printf("jCode o: %s\n", cJSON_Print(jCode));
+            //printf("jText o: %s\n", cJSON_Print(jText));
+            if(jType != NULL) {
                 //printf("jtype: %s\n", jType->valuestring);
                 departures[i]->remarks[j]->type = strdup(jType->valuestring);
             } else {
                 departures[i]->remarks[j]->type = strdup("?");
             }
 
-            if(cJSON_IsString(jCode) && !cJSON_IsNull(jCode)) {
+            if(jCode != NULL && jCode->valuestring != NULL) {
                 //printf("jcode: %s\n", jCode->valuestring);
                 departures[i]->remarks[j]->code = strdup(jCode->valuestring);
             } else {
                 departures[i]->remarks[j]->code = strdup("?");
             }
 
-            if(cJSON_IsString(jText) && !cJSON_IsNull(jText)) {
+            if(jText != NULL) {
                 //printf("jtext: %s\n", jText->valuestring);
                 departures[i]->remarks[j]->text = strdup(jText->valuestring);
             } else {
                 departures[i]->remarks[j]->text = NULL;
             }
 
-            /*departures[i]->remarks[j]->type = cJSON_IsString(jType) ? strdup(jType->valuestring) : strdup("?");
-            departures[i]->remarks[j]->code = cJSON_IsString(jCode) ? strdup(jCode->valuestring) : strdup("?");
-            departures[i]->remarks[j]->text = cJSON_IsString(jText) ? strdup(jText->valuestring) : strdup("?");*/
+            /*departures[i]->remarks[j]->type = strdup(jType->valuestring);
+            departures[i]->remarks[j]->code = strdup(jCode->valuestring);
+            departures[i]->remarks[j]->text = strdup(jText->valuestring);*/
+
         }
     }
-
-
-
 
     cJSON_Delete(root);
     return departures;
