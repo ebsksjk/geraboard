@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <wchar.h>
-
 #include <locale.h>
 
 char* restrcat(char *s1, const char *s2){
@@ -98,5 +97,7 @@ char* getTimeFromDateTime(char* datetime) {
 
     return ret;
 }
+
+
 
 #endif
