@@ -34,6 +34,18 @@ int printWString(char* s) {
     return 0;
 }
 
+int printRemarks(Departure *det) {
+    for(int y = 0; y < det->rcount; y++) {
+        if(!((det->remarks[y] == NULL) || (det->remarks[y]->text == NULL || !(strcmp(det->remarks[y]->code, "cancelled"))))) {
+            printf("\t - Hinweis bezüglich %s:\n\t\t", det->remarks[y]->type);
+            char* s = det->remarks[y]->text;
+            printWString(s);
+            printf(" (%s)\n", det->remarks[y]->code);
+        }
+    }
+    return 0;
+}
+
 int printDepartures(const char* sname) {
     const char* stationname = escapeString(sname);
     Station* station = getStation(stationname);
@@ -70,14 +82,7 @@ int printDepartures(const char* sname) {
 
         if(cancelled) {
             printf(" - %s (%s) nach (%s) um (%s) fällt heute aus.\n", det[i]->line->name, det[i]->line->fahrtNr, det[i]->direction, det[i]->tPlannedWhen);
-            for(int y = 0; y < det[i]->rcount; y++) {
-                if(!((det[i]->remarks[y] == NULL) || (det[i]->remarks[y]->text == NULL || !(strcmp(det[i]->remarks[y]->code, "cancelled"))))) {
-                    printf("\t - Hinweis bezüglich %s:\n\t\t", det[i]->remarks[y]->type);
-                    char* s = det[i]->remarks[y]->text;
-                    printWString(s);
-                    printf(" (%s)\n", det[i]->remarks[y]->code);
-                }
-            }
+            printRemarks(det[i]);
             continue;
         }
 
@@ -92,15 +97,7 @@ int printDepartures(const char* sname) {
         } else {
             printf("auf Gleis %s\n", det[i]->platform);
         }
-
-        for(int y = 0; y < det[i]->rcount; y++) {
-            if(!((det[i]->remarks[y] == NULL) || (det[i]->remarks[y]->text == NULL || !(strcmp(det[i]->remarks[y]->code, "cancelled"))))) {
-                printf("\t - Hinweis bezüglich %s:\n\t\t", det[i]->remarks[y]->type);
-                char* s = det[i]->remarks[y]->text;
-                printWString(s);
-                printf(" (%s)\n", det[i]->remarks[y]->code);
-            }
-        }
+        printRemarks(det[i]);
     }
     for(int y = 0; y < dcount; y++) {
         freeDeparture(det[y], det[y]->rcount);
