@@ -7,11 +7,13 @@
 #define DEF_LANG "de"
 //other: en
 #include "header/departures.h"
+#include "header/config.h"
 
 int main(const int c, char** v){
     int ret = 0;
 
     if(c == 1) {
+        getConfig("bin/config.json");
         ret = printDepartures("Gera Hbf", false) | printDepartures("Gera Heinrichstraße", true);
         return ret;
     }
